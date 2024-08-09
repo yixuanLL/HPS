@@ -9,14 +9,14 @@ import numpy as np
 # from poibin import PoiBin
 import time
 # from numba import vectorize, njit, guvectorize,jit, cuda
-import computeamplification_HP_GDP
+# import computeamplification_HP_GDP
 
 
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 import scipy as sp
 import copy
-from gdp_to_dp import gdp_resolve_eps
+# from gdp_to_dp import gdp_resolve_eps
 
 
 # This document contains 4 computations: 2 empirical and 2 theoretical.

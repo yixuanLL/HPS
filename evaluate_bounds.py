@@ -14,7 +14,7 @@ l = 0.05
 r = 1
 delta_l = 10**(-10)
 ns = np.geomspace(1000, 100000, num=20, dtype=int)
-# ns=[1000,1000]
+ns=[1000,2000]
 def plot_panel(xs, bounds):
     fig = plt.figure()
     ls = ['--', ':', '-.', '--','--','--','--', '-', '-', '-']

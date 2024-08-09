@@ -13,7 +13,7 @@ r=2
 delta_l = 10**(-10)
 delta_r = 10**(-8)
 ns = np.geomspace(1000, 100000, num=20, dtype=int)
-# ns=[1000,5000]
+ns=[1000,5000]
 def plot_panel(xs, bounds):
     fig = plt.figure()
     ls = ['--', ':', '-.', '--','--','--','--', '-', '-', '-']

@@ -200,26 +200,3 @@ class HP_fDP(Clones):
         except AssertionError:
             return np.max(eps) #np.nan
         return numerical_upperbound 
-'''
-class HP(Clones): #numerical
-    """Implement the bound from Liu et al. [HP]"""
-
-    # def __init__(self, name='HP'):
-    #     super(HP, self).__init__(name=name)
-        # The constants in the bound are only valid for a certain parameter regime
-    def __init__(self, name='Ours', num_interations=10, step=100, mech=None, clip_bound=None):
-        self.name = name
-        self.num_interations = num_interations
-        self.step = step
-        self.mech = mech
-        self.clip_bound = clip_bound
-        
-    def get_eps(self, eps, n, delta):
-        try:
-            eps_local = eps[0]
-            delta_local = eps[1]
-            numerical_upperbound = CA_HP.numericalanalysis(n, eps_local, delta_local, delta, self.num_interations, self.step, True, self.mech, self.clip_bound)
-        except AssertionError:
-            return np.max(eps) #np.nan
-        return numerical_upperbound
-'''
