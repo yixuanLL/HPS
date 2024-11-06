@@ -95,16 +95,9 @@ def gen_eps(l, r, n, dist):
 clip_bound = 0.1
 # pure DP
 pure_bounds = [
-            Hoeffding(LaplaceMechanism()),
-            RDP(),
-            UniS(),
-            General_GDP(pure_on=True),
-            PerS(),
             HP_fDP(mech="laplacian", clip_bound=clip_bound, pure_on=True)
           ]
 appox_bounds =   [
-            UniS_approax(),
-            General_GDP(pure_on=False),
             HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
           ]  
 bound_list =[pure_bounds, appox_bounds]

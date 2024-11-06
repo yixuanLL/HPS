@@ -2,6 +2,7 @@
 # Copyright (C) 2020 Apple Inc. All Rights Reserved.
 # import EoN.privAmp.computeamplification_HP_numerical as CA_HP
 import computeamplification_HP_fDP as CA_HP_fDP
+import computeamplification_HP_fDP_pdp as CA_HP_fDP_PDP
 import computeamplification_perS as CA_perS
 import computeamplification as CA_uniS
 import computeamplification_GDP as CA_GDP
@@ -200,26 +201,38 @@ class HP_fDP(Clones):
         except AssertionError:
             return np.max(eps) #np.nan
         return numerical_upperbound 
-'''
-class HP(Clones): #numerical
-    """Implement the bound from Liu et al. [HP]"""
 
-    # def __init__(self, name='HP'):
-    #     super(HP, self).__init__(name=name)
-        # The constants in the bound are only valid for a certain parameter regime
-    def __init__(self, name='Ours', num_interations=10, step=100, mech=None, clip_bound=None):
+################# Ours PDP for each user #####################
+class HP_fDP_PDP(Clones):
+    """Implement the bound from Liu et al. [HP_PDP]"""
+    def __init__(self, name='Ours_PDP', num_interations=10, step=100, mech=None, clip_bound=None, pure_on=True):
         self.name = name
         self.num_interations = num_interations
         self.step = step
         self.mech = mech
         self.clip_bound = clip_bound
+        self.pure_on = pure_on
         
-    def get_eps(self, eps, n, delta):
+    def get_eps(self, eps, n, delta, canary_idx=None):
         try:
             eps_local = eps[0]
             delta_local = eps[1]
-            numerical_upperbound = CA_HP.numericalanalysis(n, eps_local, delta_local, delta, self.num_interations, self.step, True, self.mech, self.clip_bound)
+            if self.pure_on:
+                delta_local *= 0
+            numerical_upperbound = CA_HP_fDP_PDP.numericalanalysis(n, eps_local, delta_local, delta, self.num_interations, self.step, True, self.mech, self.clip_bound, canary_idx)
         except AssertionError:
-            return np.max(eps) #np.nan
-        return numerical_upperbound
-'''
+            # return np.max(eps) #np.nan
+            return eps[canary_idx]
+        return numerical_upperbound 
+    
+    def get_delta(self, eps, n, eps_s):
+        try:
+            eps_local = eps[0]
+            delta_local = eps[1]
+            if self.pure_on:
+                delta_local *= 0
+            numerical_upperbound = CA_HP_fDP_PDP.numericalanalysis_delta(n, eps_local, delta_local, eps_s, self.num_interations, self.step, True, self.mech, self.clip_bound, canary_idx)
+        except AssertionError:
+            # return np.max(eps) #np.nan
+            return eps[canary_idx]
+        return numerical_upperbound 

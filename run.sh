@@ -8,5 +8,5 @@ source /local/scratch/yliu270/anaconda3/bin/activate flamby
 dir_path=$(dirname $(pwd))
 echo "${dir_path}"
 
-output=`python ${dir_path}/privAmp/evaluate_bounds.py`
+output=`python ${dir_path}/HPS_PDP/evaluate_pdp.py`
 echo "${output}"
