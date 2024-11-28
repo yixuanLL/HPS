@@ -9,10 +9,10 @@ import time
 # delta_s = 10**(-6)
 # delta_l = 10**(-8)
 
-# l=0.5
-# r=2
-l = 0.05
-r = 1
+l=0.5
+r=2
+# l = 0.2
+# r = 1
 delta_l = 10**(-10)
 # ns = np.geomspace(1000, 100000, num=20, dtype=int)
 ns=[10000]
@@ -29,11 +29,11 @@ def plot_panel(ns, bounds):
     lsi = '--'
     for b in bounds:
         print('theory,mech:', b.get_name(), b.mech)
-        for dist in ['Uniform1', 'Gauss1']: #, 'MixGauss']:
+        for dist in ['Uniform2', 'Gauss2', 'Step2']:
             print('dist:', dist)
             ys = list()
             for n in ns:
-                user_idx = [uid for uid in range(n)]
+                user_idx = [uid for uid in range(0, n, 500)]
                 eps0 = gen_eps(l, r, n, dist)
                 eps0 = np.sort(eps0)
                 # print(eps0)
@@ -48,10 +48,12 @@ def plot_panel(ns, bounds):
                 # plt.plot(user_idx, ys, label="DP", linestyle=lsi, marker=mi, color=c[i], markevery=50)   
                 # plt.plot(user_idx, ys, label="LDP", linestyle=lsi, marker=mi, color=c[i+1], markevery=50) 
                 # plt.legend(loc='upper right')
-                plt.plot(eps0[0], ys, label="LDP-DP epsilon", linestyle="-", marker=mi, color=c[0], markevery=50) 
-                plt.plot(eps0[0], ys/eps0[0], label="DP/LDP amp ratio", linestyle="--", marker=mi, color=c[1], markevery=50) 
+
+                eps0_sample = eps0[0][user_idx]
+                plt.plot(eps0_sample, ys, label="LDP-DP epsilon", linestyle="-", marker=mi, color=c[0], markevery=50) 
+                plt.plot(eps0_sample, ys/eps0_sample, label="DP/LDP amp ratio", linestyle="--", marker=mi, color=c[1], markevery=50) 
                 print("n:",n)
-                print("eps0:", eps0[0])
+                print("eps0:", eps0_sample)
                 print("ys:", ys)
                 plt.legend()
 
@@ -72,11 +74,11 @@ def plot_panel(ns, bounds):
 
 
 def gen_eps(l, r, n, dist):
-    if dist == 'Uniform1':
+    if dist == 'Uniform2':
         eps0 = np.random.uniform(l, r, n)
         delta0 = np.array([delta_l]*n)
         return (eps0, delta0)
-    elif dist == 'Gauss1':
+    elif dist == 'Gauss2':
         eps0 = np.random.normal(r*0.75, 0.5, n)
         eps0 = np.maximum(eps0, l)
         eps0 = np.minimum(eps0, r)
@@ -95,7 +97,7 @@ def gen_eps(l, r, n, dist):
         eps0 = np.array([l]*n)
         delta0 = np.array([delta_l]*n)
         return (eps0, delta0)
-    elif dist == 'Step':
+    elif dist == 'Step2':
         step = int(n*0.5)
         eps_low = np.array([l]*step)
         eps_high = np.array([r]*(n-step))
