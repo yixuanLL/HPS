@@ -16,12 +16,12 @@ num_iterations = 10
 # #This is a parameter of the empirical analysis computation that can be tuned for efficiency. The larger step is, the less accurate the result, but more efficient the algorithm.
 step = 100
 
-n = 1 * 10**4
+# n = 1 * 10**4
 # epsorig = np.random.uniform(1,1, n)
-epsorig = np.array([1]*n)
-delta = 10**(-5)
+# epsorig = np.array([1]*n)
+# delta = 10**(-5)
 
-eps_max = np.max(epsorig)
+# eps_max = np.max(epsorig)
 
 class Clones:
     """Base class for "privacy amplification by shuffling" bounds."""
