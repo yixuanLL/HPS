@@ -7,21 +7,21 @@ import numpy as np
 
 # delta_s = 10**(-6)
 # delta_l = 10**(-8)
-
+delta = 10**(-5)
 # l=0.5
 # r=2
 l = 0.05
 r = 1
 delta_l = 10**(-10)
 ns = np.geomspace(1000, 100000, num=20, dtype=int)
-# ns=[1000,1000]
+# ns=[1000,10000]
 def plot_panel(xs, bounds):
     fig = plt.figure()
     ls = ['--', ':', '-.', '--','--','--','--', '-', '-', '-']
     m = ['', '', '', '','', '', '', '', '', '']
     c = ['slategrey', 'dodgerblue', 'blueviolet', 'darkcyan', 'yellowgreen', 'gold', 'lightcoral','khaki', 'salmon', 'orange','yellowgreen', 'r', 'orange']
-    ours_c = ['r', 'orange'] #, 'yellowgreen']
-    ours_m = ['o', 'p', '*']
+    ours_c = ['r', 'orange', 'lightcoral','gold']
+    ours_m = ['o', 'p', '*', 's']
     i=-1
     k=-1
     mi = ''
@@ -37,7 +37,7 @@ def plot_panel(xs, bounds):
                 ys.append(re)
                 print(x, '\t', re)     
             i+=1       
-            if b.get_name() not in [ "Ours", "LZX", "CCC"]: 
+            if b.get_name() not in [ "HPS", "EoN_RR", "CCC"]: 
                 plt.plot(xs, ys, label=b.get_name(), linestyle=lsi, marker=mi, color=c[i], markevery=5)   
                 break  
             else:
@@ -45,10 +45,10 @@ def plot_panel(xs, bounds):
                 ci = c[i]
 
                 # color = ours_c[k%3]
-                if b.get_name() in ["Ours"]:
+                if b.get_name() in ["HPS", "EoN_RR"]:
                     lsi = '-'
-                    ci = ours_c[k%2]
-                    mi = ours_m[k%2]
+                    ci = ours_c[k%4]
+                    mi = ours_m[k%4]
                     # dist = dist +' '+ b.mech
                 me = 5
                 if dist == 'MixGauss':
@@ -103,6 +103,27 @@ appox_bounds =   [
 bound_list =[pure_bounds, appox_bounds]
 # bound_list =[pure_bounds, []]
 # bound_list =[[], appox_bounds]
+
+# for thesis Random response
+pure_bounds = [
+            # Hoeffding(RRMechanism()),
+            Hoeffding(LDPMechanism()),
+            RDP(),
+            UniS(),
+            # General_GDP(pure_on=True),
+            # PerS_RR(),
+            PerS()
+            # HP_fDP(mech="RR", clip_bound=clip_bound, pure_on=True),
+            # HP_fDP(mech="laplacian", clip_bound=clip_bound, pure_on=True)
+          ]
+appox_bounds =   [
+            UniS_approax(),
+            General_GDP(pure_on=False),
+            HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
+          ]  
+bound_list =[pure_bounds]
+
+
 i=0
 plt.switch_backend('agg')
 for bounds in bound_list: 
@@ -133,7 +154,7 @@ for bounds in bound_list:
     plt.legend(fontsize=14, loc="upper right")
     # plt.yscale('log')
     plt.show()
-    path = './epsilon1_'+ path_name + '.pdf'
+    path = './epsilon1_ch_lap_'+ path_name + '.pdf'
     plt.savefig(path)
     print('----'+path+'----')
     plt.close()

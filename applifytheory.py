@@ -4,6 +4,7 @@
 import computeamplification_HP_fDP as CA_HP_fDP
 import computeamplification_HP_fDP_pdp as CA_HP_fDP_PDP
 import computeamplification_perS as CA_perS
+import computeamplification_perS as CA_perS_RR
 import computeamplification as CA_uniS
 import computeamplification_GDP as CA_GDP
 import computeamplification_approx as CA_approax
@@ -58,13 +59,27 @@ class UniS(Clones):
 class PerS(Clones):
     """Implement the bound from Liu et al. [LZX'23]"""
 
-    def __init__(self, name='LZX'):
+    def __init__(self, name='EoN'):
         super(PerS, self).__init__(name=name)
         # The constants in the bound are only valid for a certain parameter regime
         
     def get_eps(self, eps, n, delta):
         try:
             numerical_upperbound = CA_perS.numericalanalysis(n, eps[0], delta, self.num_interations, self.step, True)
+        except AssertionError:
+            return np.max(eps) #np.nan
+        return numerical_upperbound
+
+class PerS_RR(Clones):
+    """Implement the bound from Liu et al. [LZX'23]"""
+
+    def __init__(self, name='EoN_RR'):
+        super(PerS_RR, self).__init__(name=name)
+        # The constants in the bound are only valid for a certain parameter regime
+        
+    def get_eps(self, eps, n, delta):
+        try:
+            numerical_upperbound = CA_perS_RR.numericalanalysis(n, eps[0], delta, self.num_interations, self.step, True)
         except AssertionError:
             return np.max(eps) #np.nan
         return numerical_upperbound
@@ -172,7 +187,7 @@ class UniS_approax(Clones):
 ################# Ours #####################
 class HP_fDP(Clones):
     """Implement the bound from Liu et al. [HP]"""
-    def __init__(self, name='Ours', num_interations=10, step=100, mech=None, clip_bound=None, pure_on=True):
+    def __init__(self, name='HPS', num_interations=10, step=100, mech=None, clip_bound=None, pure_on=True):
         self.name = name
         self.num_interations = num_interations
         self.step = step

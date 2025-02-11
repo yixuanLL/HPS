@@ -1,0 +1,47 @@
+/home/liuyixuan/workspace/HPS/applifytheory.py:102: RuntimeWarning: overflow encountered in double_scalars
+  sum += comb(lambd, i) * i * gamma(i/2.0) * ((np.exp(2*eps)-1)**2/(2*np.exp(2*eps)*n_bar))**(i/2.0)
+/home/liuyixuan/workspace/HPS/applifytheory.py:102: RuntimeWarning: invalid value encountered in double_scalars
+  sum += comb(lambd, i) * i * gamma(i/2.0) * ((np.exp(2*eps)-1)**2/(2*np.exp(2*eps)*n_bar))**(i/2.0)
+/home/liuyixuan/workspace/HPS/applifytheory.py:104: RuntimeWarning: overflow encountered in exp
+  + np.exp(eps*lambd-(n-1)/(8*np.exp(eps)))) # upperbound1
+hiding delta: 5.402221549044766e-08
+stronger: 0.2689414213699951
+generalized: 0.31002551887238755
+None
+None
+[<blanket.shuffleddp.amplification_bounds.Hoeffding object at 0x7f479d2be6d0>, <applifytheory.RDP object at 0x7f479d2be7f0>, <applifytheory.UniS object at 0x7f479d2be880>, <applifytheory.General_GDP object at 0x7f479d2be8e0>, <applifytheory.HP_fDP object at 0x7f479d2be940>]
+theory,mech: BBGN None
+dist: Uniform1
+1000 	 0.5115414397209216
+1274 	 0.4462694344244142
+1623 	 0.39010105326409555
+2069 	 0.340917419757959
+2636 	 0.2991400531705802
+3359 	 0.26210166454586525
+4281 	 0.22977071312162212
+5455 	 0.20163436477555916
+6951 	 0.1768936741910668
+8858 	 0.1552398408774633
+11288 	 0.13628005847229446
+14384 	 0.11962204085264187
+18329 	 0.10495984552711078
+23357 	 0.09215352499234064
+29763 	 0.08089839520293367
+37926 	 0.0710021541402639
+48329 	 0.062311548961048305
+61584 	 0.05468325460212238
+78475 	 0.04798090932881803
+100000 	 0.04209625136791331
+theory,mech: GDDTK None
+dist: Uniform1
+1000 	 0.33182094756837405
+Traceback (most recent call last):
+  File "evaluate_bounds.py", line 136, in <module>
+    plot_panel(ns, bounds)
+  File "evaluate_bounds.py", line 36, in plot_panel
+    re = b.get_eps(eps0, x, delta)
+  File "/home/liuyixuan/workspace/HPS/applifytheory.py", line 102, in get_eps
+    sum += comb(lambd, i) * i * gamma(i/2.0) * ((np.exp(2*eps)-1)**2/(2*np.exp(2*eps)*n_bar))**(i/2.0)
+  File "/home/liuyixuan/anaconda3/envs/torch/lib/python3.8/site-packages/scipy/special/_basic.py", line 2663, in comb
+    cond = (k <= N) & (N >= 0) & (k >= 0)
+KeyboardInterrupt

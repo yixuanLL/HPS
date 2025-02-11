@@ -187,7 +187,7 @@ def probHP(ei_arr, di_arr, e1_idx, mech, C):
         # pij = 2 / (np.exp(e1)+1)
         # p1 = 1/(1+np.exp(e1))
         #cikm version
-        pij, p1 = compute_pij(ei, di, e1, d1, mech, C)
+        pij, p1 = compute_pij(ei, di, e1, d1, mech, C, n)
         # print(pij)
         mu += np.sum(pij) #aaai version
         sigma += np.sum(pij*(1-pij)) #aaai version
@@ -195,7 +195,7 @@ def probHP(ei_arr, di_arr, e1_idx, mech, C):
     return mu, sigma, gamma, p1
 
 
-def compute_pij(ei, di, ej, dj, mech, C):
+def compute_pij(ei, di, ej, dj, mech, C, n):
     mu_i = C
     mu_j = 0
     roots = []
@@ -205,6 +205,10 @@ def compute_pij(ei, di, ej, dj, mech, C):
     eps_3 = ei
     x_range = 20
     x = np.linspace(-x_range,x_range+0.1,10001)
+    if mech == 'RR':
+        pij = np.minimum((1+np.e**ej)/(np.e**ej*(1+np.e**ei)), (1+np.e**ei)/(np.e**ei*(1+np.e**ej)) ) 
+        p1 = 1/(np.e**ej)
+        return pij, p1
     if mech == 'laplacian':
         b1 = np.abs(mu_j-mu_i)/eps_1
         b2 = np.abs(mu_j-mu_i)/eps_2
@@ -265,7 +269,7 @@ def compute_pij(ei, di, ej, dj, mech, C):
                 p11 = sp.stats.laplace.cdf(x[x2[-1]], loc=mu_j, scale = b3) - sp.stats.laplace.cdf(x[x2[0]], loc=mu_j, scale = b3)
         else:
             p11=1
-        p1 = sp.stats.laplace.cdf(C/2, loc=C, scale = b1) # 1/(1+e)
+        p1 = sp.stats.laplace.cdf(C/2, loc=C, scale = b1) # 1/(1+e), first position amplification effect
     if mech == 'gaussian':
         if len(x1)>0:
             #xi looks like x10
