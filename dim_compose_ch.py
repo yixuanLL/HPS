@@ -7,55 +7,40 @@ import numpy as np
 
 # delta_s = 10**(-6)
 # delta_l = 10**(-8)
-delta = 10**(-5)#just for FV not fail to bound. When training fl, use 10**(-8)
+delta = 10**(-9)
 # l=0.5
 # r=2
 l = 0.05
-r = 1
-delta_l = 10**(-10) 
-ns = np.geomspace(1000, 100000, num=20, dtype=int)
-# ns=[1000]
+r = 0.5
+delta_l = 10**(-9)
+delta_comp=10**(-6)
+# ns = np.geomspace(1000, 100000, num=20, dtype=int)
+ns=[10000]
 def plot_panel(xs, bounds):
-    fig = plt.figure()
-    ls = ['--', ':', '-.', '--','--','--','--', '-', '-', '-']
-    m = ['', '', '', '','', '', '', '', '', '']
-    c = ['slategrey', 'dodgerblue', 'blueviolet', 'darkcyan', 'yellowgreen', 'gold', 'lightcoral','khaki', 'salmon', 'orange','yellowgreen', 'r', 'orange']
-    ours_c = ['r', 'orange', 'lightcoral','gold']
-    ours_m = ['o', 'p', '*', 's']
+
     i=-1
     k=-1
     mi = ''
     lsi = '--'
     for b in bounds:
         print('theory,mech:', b.get_name(), b.mech)
-        for dist in ['Uniform1', 'Gauss1']: #, 'MixGauss1']:
+        for dist in ['Uniform1', 'Gauss1', 'MixGauss1']:
             print('dist:', dist)
             ys = list()
             for x in xs:
                 eps0 = gen_eps(l, r, x, dist)
                 re = b.get_eps(eps0, x, delta)
                 ys.append(re)
-                print(x, '\t', re)     
-            i+=1       
-            if b.get_name() not in [ "HPS", "EoN_RR", "CCC"]: 
-                plt.plot(xs, ys, label=b.get_name(), linestyle=lsi, marker=mi, color=c[i], markevery=5)   
-                break  
-            else:
-                k += 1
-                ci = c[i]
+                print('dimension level:',x, '\t', re)  
+                composition(re, delta, delta_comp, 1570, 7850)  
 
-                # color = ours_c[k%3]
-                if b.get_name() in ["HPS", "EoN_RR"]:
-                    lsi = '-'
-                    ci = ours_c[k%4]
-                    mi = ours_m[k%4]
-                    # dist = dist +' '+ b.mech
-                me = 5
-                if dist == 'MixGauss':
-                    me = 3
-                plt.plot(xs, ys, label=b.get_name()+' '+dist, linestyle=lsi, marker=mi, color=ci, markevery=me) 
-    plt.legend(loc='upper right')
-
+def composition(eps_before, delta_before, delta_after, b, d):
+    eps_rs = eps_before*np.sqrt(2*d*np.log(1/delta_after))+d*eps_before*(np.exp(eps_before)-1)
+    eps_ps =  eps_before*np.sqrt(4*b*np.log(1/delta_after))+2*b*eps_before*(np.exp(eps_before)-1)
+    delta_rs = d*delta_before+delta_after
+    delta_ps = 2*b*delta_before+delta_after
+    print('fully composition d dim:', eps_rs, delta_rs)
+    print('post sparsification b dim:', eps_ps, delta_ps)
 
 def gen_eps(l, r, n, dist):
     if dist == 'Uniform1':
@@ -64,7 +49,7 @@ def gen_eps(l, r, n, dist):
         return (eps0, delta0)
     #for aaai version
     elif dist == 'Gauss1':
-        eps0 = np.random.normal(0.8, 0.5, n)
+        eps0 = np.random.normal(0.1, 1, n)
         eps0 = np.maximum(eps0, l)
         eps0 = np.minimum(eps0, r)
         delta0 = np.array([delta_l]*n)
@@ -111,13 +96,13 @@ def gen_eps(l, r, n, dist):
 
 clip_bound = 0.1
 # pure DP
-# pure_bounds = [
-#             HP_fDP(mech="laplacian", clip_bound=clip_bound, pure_on=True)
-#           ]
-# appox_bounds =   [
-#             HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
-#           ]  
-# bound_list =[pure_bounds, appox_bounds]
+pure_bounds = [
+            HP_fDP(mech="laplacian", clip_bound=clip_bound, pure_on=True)
+          ]
+appox_bounds =   [
+            HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
+          ]  
+bound_list =[pure_bounds, appox_bounds]
 # bound_list =[pure_bounds, []]
 # bound_list =[[], appox_bounds]
 
@@ -127,24 +112,22 @@ pure_bounds = [
             Hoeffding(LDPMechanism()),
             RDP(),
             UniS(),
-            General_GDP(pure_on=True),
-            PerS_RR(),
-            HP_fDP(mech="RR", clip_bound=clip_bound, pure_on=True)
-            # PerS()
+            # General_GDP(pure_on=True),
+            # PerS_RR(),
+            PerS()
+            # HP_fDP(mech="RR", clip_bound=clip_bound, pure_on=True),
             # HP_fDP(mech="laplacian", clip_bound=clip_bound, pure_on=True)
           ]
 appox_bounds =   [
             UniS_approax(),
-            General_GDP(pure_on=False),
-            HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
+            # General_GDP(pure_on=False),
+            # HP_fDP(mech="gaussian", clip_bound=clip_bound, pure_on=False)
           ]  
-bound_list =[pure_bounds, appox_bounds]
+bound_list =[appox_bounds]
 
-i=0
+
+i=1
 plt.switch_backend('agg')
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus'] = False
-
 for bounds in bound_list: 
     i += 1
     if len(bounds)==0:
@@ -156,27 +139,29 @@ for bounds in bound_list:
     plot_panel(ns, bounds)
 
     if i==1:
-        # plt.ylim(0,0.6)# 0.5-2
-        title_txt = '$\epsilon^l_i \in$ [{}, {}]'.format(l,r)
         path_name = "pure"
     if i==2: ##approx
-        title_txt = '$\epsilon^l_i \in [{}, {}], \delta^l = 10^{}$'.format(l,r,'{-%d}' % np.log10(1/delta_l))
         path_name = "approx"
-        # plt.ylim(0,0.45)# 0.5-2
-        plt.ylim(0,0.2)# 0.05-1
-    plt.xlabel('$n$',fontsize=14)
-    plt.ylabel('$\\varepsilon^s$',fontsize=14)
-    plt.title(title_txt,fontsize=14)
-    plt.xscale('log')
-    plt.xticks(size=14)
-    plt.yticks(size=14)
-    plt.legend(fontsize=14, loc="upper right")
-    # plt.yscale('log')
-    plt.show()
-    path = './epsilon1_ch_'+ path_name + '.pdf'
-    plt.savefig(path)
-    print('----'+path+'----')
-    plt.close()
+    # plt.xlabel('$n$',fontsize=14)
+    # plt.ylabel('$\\varepsilon^s$',fontsize=14)
+    # plt.title(title_txt,fontsize=14)
+    # plt.xscale('log')
+    # plt.xticks(size=14)
+    # plt.yticks(size=14)
+    # plt.legend(fontsize=14, loc="upper right")
+    # # plt.yscale('log')
+    # plt.show()
+    # path = './epsilon1_ch_lap_'+ path_name + '.pdf'
+    # plt.savefig(path)
+    # print('----'+path+'----')
+    # plt.close()
+
+# composition(0.05, delta_l, delta_comp, 1570, 7850)
+
+# delta=10**(-9)
+# epsilon=0.5
+# noise_multiplier = np.sqrt(2*np.log(1/delta))/epsilon
+# print(noise_multiplier)
 
 
 

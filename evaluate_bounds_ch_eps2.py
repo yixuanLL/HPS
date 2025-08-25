@@ -8,10 +8,10 @@ import numpy as np
 # delta_s = 10**(-6)
 # delta_l = 10**(-8)
 delta = 10**(-5)#just for FV not fail to bound. When training fl, use 10**(-8)
-# l=0.5
-# r=2
-l = 0.05
-r = 1
+l=0.5
+r=2
+# l = 0.05
+# r = 1
 delta_l = 10**(-10) 
 ns = np.geomspace(1000, 100000, num=20, dtype=int)
 # ns=[1000]
@@ -28,7 +28,7 @@ def plot_panel(xs, bounds):
     lsi = '--'
     for b in bounds:
         print('theory,mech:', b.get_name(), b.mech)
-        for dist in ['Uniform1', 'Gauss1']: #, 'MixGauss1']:
+        for dist in ['Uniform2', 'Gauss2']: #, 'MixGauss1']:
             print('dist:', dist)
             ys = list()
             for x in xs:
@@ -58,18 +58,18 @@ def plot_panel(xs, bounds):
 
 
 def gen_eps(l, r, n, dist):
-    if dist == 'Uniform1':
+    if dist == 'Uniform2':
         eps0 = np.random.uniform(l, r, n)
         delta0 = np.array([delta_l]*n)
         return (eps0, delta0)
     #for aaai version
-    elif dist == 'Gauss1':
-        eps0 = np.random.normal(0.8, 0.5, n)
+    elif dist == 'Gauss2':
+        eps0 = np.random.normal(1.5, 0.5, n)
         eps0 = np.maximum(eps0, l)
         eps0 = np.minimum(eps0, r)
         delta0 = np.array([delta_l]*n)
         return (eps0, delta0)
-    elif dist == 'MixGauss1':
+    elif dist == 'MixGauss2':
         step = int(n*0.5)
         eps_low = np.random.normal(0.1, 1, step)
         eps_high = np.random.normal(0.5, 1, n-step)
@@ -173,7 +173,7 @@ for bounds in bound_list:
     plt.legend(fontsize=14, loc="upper right")
     # plt.yscale('log')
     plt.show()
-    path = './epsilon1_ch_'+ path_name + '.pdf'
+    path = './epsilon2_ch_'+ path_name + '.pdf'
     plt.savefig(path)
     print('----'+path+'----')
     plt.close()

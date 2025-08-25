@@ -43,9 +43,9 @@ def compute_pij(ei, di, ej, dj, mech, C):
     # plt.plot(x[1:],pmf_1)
     # plt.plot(x[1:],pmf_2)
     # plt.plot(x[1:],pmf_3)
-    plt.plot(x,stats.norm.pdf(x,loc=mu_j, scale = sigma_1), label='$R(x_1^0)$')
-    plt.plot(x,stats.norm.pdf(x,loc=mu_i, scale = sigma_2), label='$R(x_1^1)$')
-    plt.plot(x,stats.norm.pdf(x,loc=mu_j+C/4, scale = sigma_3), label='$R(x_i)$')
+    plt.plot(x,stats.norm.pdf(x,loc=mu_j, scale = sigma_1), label='$M(x_1^0)$')
+    plt.plot(x,stats.norm.pdf(x,loc=mu_i, scale = sigma_2), label='$M(x_1^1)$')
+    plt.plot(x,stats.norm.pdf(x,loc=mu_j+C/4, scale = sigma_3), label='$M(x_i)$')
     # plt.plot(x,stats.norm.pdf(x,loc=mu_j, scale = sigma_1), label='$R(x_1)$')
     # plt.plot(x,stats.norm.pdf(x,loc=mu_i, scale = sigma_2), label='$R(x\'_1)$')
     # plt.plot(x,stats.norm.pdf(x,loc=mu_j+C/4, scale = sigma_3), label='$R(x_i)$')
@@ -100,11 +100,11 @@ def compute_pij(ei, di, ej, dj, mech, C):
             p11=1
     xp = x[x1[0]: x1[-1]]
     print(x1[-1], x1[0])
-    plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='g', alpha=0.3, label="$R(x_1^0)$ max")
+    plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='g', alpha=0.3, label="$M(x_1^0)$ max")
     # plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='g', alpha=0.3, label="$R(x_1)$ max")
     xp = x[x2[0]: x2[-1]]
     print(x2[-1], x2[0])
-    plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='orange', alpha=0.3, label="$R(x_1^1)$ max")
+    plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='orange', alpha=0.3, label="$M(x_1^1)$ max")
     # plt.fill_between(xp, stats.norm.pdf(xp, loc=mu_j+C/4, scale = sigma_3), xp*0, color='orange', alpha=0.3, label="$R(x\'_1)$ max")
     # plt.xlabel(fontsize=14)
     # plt.ylabel(fontsize=14)
